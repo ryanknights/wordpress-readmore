@@ -80,7 +80,7 @@
 		}
 
 		/**
-		 * Accordion callback | Renders shortcode for an accordion
+		 * Read More/Less callback | Renders shortcode for a read more link
 		 *
 		 * @param array $atts Attributes passed to the shortcode
 		 * @param string $content Content passed into the shortcode
