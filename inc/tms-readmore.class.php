@@ -14,7 +14,7 @@
 		{	
 			$this->enqueueAssets();
 			$this->addShortcodes();
-			$this->addFilters();
+			$this->addActionsFilters();
 		}
 
 		/**
@@ -29,14 +29,16 @@
 		}
 
 		/**
-		 * Adds filters for scripts and shortcode character removal
+		 * Adds filters/actions for scripts and shortcode character removal
 		 *
 		 * @return void		 
 		 */
 
-		public function addFilters ()
+		public function addActionsFilters ()
 		{
 			add_action('wp_footer', array(&$this, 'printScript'));
+			add_action('admin_head', array(&$this, 'addToTinyMCE'));
+			//add_filter('the_content', array(&$this, 'removeChars'));
 		}
 
 		/**
@@ -93,10 +95,57 @@
 
 			$attributes  = shortcode_atts(array(), $atts);
 
-			$html = '<span class="readmore-content">'.do_shortcode($content).'</span>';
+			$html = '<div class="readmore-content">'.do_shortcode($content).'</div>';
 
 			return $html;
-		}	
+		}
+
+		/**
+		 * Removes <br /> & <p> tags from inside shortcode so formatting can be used
+		 *
+		 * @param array $content Content of the post
+		 * @return String $html content without the troublesome tags		 
+		 */
+
+		public function removeChars ($content)
+		{
+			$block = join("|",array("readmore"));
+			$rep   = preg_replace("/(<p>)?\[($block)(\s[^\]]+)?\](<\/p>|<br \/>)?/","[$2$3]",$content);
+			$rep   = preg_replace("/(<p>)?\[\/($block)](<\/p>|<br \/>)?/","[/$2]",$rep);
+
+			return $rep;
+		}
+
+		/**
+		 * Sets up filters to include JS file & add button into tinymce editor
+		 *
+		 * @return void		 
+		 */	
+
+		public function addToTinyMCE ()
+		{
+			if (!current_user_can('edit_posts') && !current_user_can('edit_pages'))
+			{
+				return false;
+			}
+
+			if (get_user_option('rich_editing') === 'true')
+			{
+				add_filter('mce_external_plugins', function ($plugin_array)
+				{
+					$plugin_array['readmore_button'] = plugin_dir_url(__FILE__) . 'assets/js/tms-readmore-tinymce.min.js';
+
+					return $plugin_array;
+				});
+
+				add_filter('mce_buttons', function ($buttons)
+				{
+					array_push($buttons, 'readmore_button');
+
+					return $buttons;
+				});
+			}
+		}
 	}
 
 ?>

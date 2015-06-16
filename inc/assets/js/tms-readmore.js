@@ -24,7 +24,7 @@
     {   
         this.$trigger = $('<a data-readmore>Read more...</a>');
 
-        this.$el.after(this.$trigger);
+        this.$el.hide().after(this.$trigger);
     };
 
     Readmore.prototype._events = function ()

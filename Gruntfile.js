@@ -10,7 +10,8 @@ module.exports = function (grunt)
 			{
 				files :
 				{
-					'inc/assets/js/tms-readmore.min.js' : ['inc/assets/js/tms-readmore.js']
+					'inc/assets/js/tms-readmore.min.js' : ['inc/assets/js/tms-readmore.js'],
+					'inc/assets/js/tms-readmore-tinymce.min.js' : ['inc/assets/js/tms-readmore-tinymce.js']
 				}
 			}
 		},
@@ -46,7 +47,7 @@ module.exports = function (grunt)
 
 			scripts :
 			{
-				files : ['inc/assets/js/tms-readmore.js'],
+				files : ['inc/assets/js/tms-readmore.js', 'inc/assets/js/tms-readmore-tinymce.js'],
 				tasks : ['uglify:app']
 			},
 
